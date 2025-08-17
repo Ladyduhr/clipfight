@@ -1,0 +1,26 @@
+{
+  "name": "clipfight",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:generate": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "latest",
+    "autoprefixer": "^10.4.2",
+    "next": "latest",
+    "next-auth": "latest",
+    "postcss": "^8.4.6",
+    "react": "latest",
+    "react-dom": "latest",
+    "tailwindcss": "latest"
+  },
+  "devDependencies": {
+    "prisma": "latest",
+    "typescript": "^5.0.0"
+  }
+}
