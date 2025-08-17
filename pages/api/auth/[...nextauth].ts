@@ -8,6 +8,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.TWITCH_CLIENT_SECRET!,
     }),
   ],
+    secret: process.env.NEXTAUTH_SECRET!,
 };
 
 export default NextAuth(authOptions);
