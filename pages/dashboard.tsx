@@ -26,8 +26,8 @@ export default function Dashboard() {
     return (
       <div className="p-8">
         <p>Du musst eingeloggt sein, um das Dashboard zu sehen.</p>
-        <button
-          onClick={() => signIn('twitch')}
+        <Link
+          href="/login"
           className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
         >
           Anmelden
