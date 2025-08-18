@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function Prototype() {
   // For now this component is a placeholder illustrating where event
@@ -8,21 +9,42 @@ export default function Prototype() {
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const { data: session } = useSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Just log the values for now. In a full implementation, this would
-    // call a mutation endpoint or state management to persist the event.
-    console.log({ title, description, startDate, endDate });
-    alert('Event gespeichert (Demo)');
-    setTitle('');
-    setDescription('');
-    setStartDate('');
-    setEndDate('');
+    if (!session?.user?.id) {
+      alert('Du musst eingeloggt sein, um ein Event zu erstellen.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          description,
+          startDate,
+          endDate,
+          userId: (session.user as any).id,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Fehler beim Speichern des Events');
+      }
+      alert('Event gespeichert');
+      setTitle('');
+      setDescription('');
+      setStartDate('');
+      setEndDate('');
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
+    <div className="p-8 max-w-2xl mx-auto bg-gray-900 text-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6">Neues Event erstellen</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -34,7 +56,7 @@ export default function Prototype() {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-gray-100 focus:border-purple-500 focus:outline-none"
             required
           />
         </div>
@@ -46,7 +68,7 @@ export default function Prototype() {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-gray-100 focus:border-purple-500 focus:outline-none"
             rows={3}
           />
         </div>
@@ -60,7 +82,7 @@ export default function Prototype() {
               type="datetime-local"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-gray-100 focus:border-purple-500 focus:outline-none"
               required
             />
           </div>
@@ -73,7 +95,7 @@ export default function Prototype() {
               type="datetime-local"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-gray-100 focus:border-purple-500 focus:outline-none"
               required
             />
           </div>
